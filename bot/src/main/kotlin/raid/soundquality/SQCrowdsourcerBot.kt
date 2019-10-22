@@ -101,7 +101,11 @@ internal class SQCrowdsourcerBot(
             if (!it.all { it.isDigit() })
                 null
             else {
-                val v = it.toInt()
+                val v = try {
+                    it.toInt()
+                } catch (exc: NumberFormatException) {
+                    return@let null
+                }
                 if (v >= 0 && v <= 6)
                     v
                 else
