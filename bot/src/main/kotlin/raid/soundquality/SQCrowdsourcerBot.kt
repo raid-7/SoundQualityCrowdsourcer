@@ -12,7 +12,7 @@ import raid.soundquality.db.Db
 import raid.soundquality.db.SoundSet
 import java.io.File
 import java.net.Proxy
-import kotlin.random.Random
+import java.util.*
 
 
 internal class SQCrowdsourcerBot(
@@ -21,6 +21,7 @@ internal class SQCrowdsourcerBot(
     private val sounds: SoundSet,
     proxy: Proxy = Proxy.NO_PROXY
 ) {
+    private val random = Random()
     private val logger = LoggerFactory.getLogger(SQCrowdsourcerBot::class.java)
 
     private val bot = bot {
@@ -74,7 +75,7 @@ internal class SQCrowdsourcerBot(
     }
 
     private fun sendResults(chatId: Long) {
-        val name = "dataset" + Random.nextLong() + ".csv"
+        val name = "dataset" + random.nextLong() + ".csv"
         val file = File(name)
         exportStats(file, db.getRates())
         bot.sendDocument(chatId, file)
