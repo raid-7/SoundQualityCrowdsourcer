@@ -4,7 +4,6 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
-import kotlin.math.sqrt
 
 fun exportStats(file: File, data: Map<Pair<String, String>, List<Int>>) {
     file.delete()
@@ -25,5 +24,5 @@ private fun getStats(rates: List<Int>): Pair<Double, Double> {
     val sum = data.reduce { acc, d -> acc + d }
     val mean = sum / data.size
     val stdSq = data.fold(0.0) { acc, d -> acc + (d - mean) * (d - mean) }
-    return Pair(mean, sqrt(stdSq))
+    return Pair(mean, Math.sqrt(stdSq))
 }
