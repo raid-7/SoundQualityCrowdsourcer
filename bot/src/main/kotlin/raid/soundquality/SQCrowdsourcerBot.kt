@@ -10,16 +10,18 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.slf4j.LoggerFactory
 import raid.soundquality.db.Db
 import raid.soundquality.db.SoundSet
+import java.io.File
 import java.net.Proxy
+import kotlin.random.Random
 
 
-internal class LinkKeeperBot(
+internal class SQCrowdsourcerBot(
     tgToken: String,
     private val db: Db = Db(),
     private val sounds: SoundSet,
     proxy: Proxy = Proxy.NO_PROXY
 ) {
-    private val logger = LoggerFactory.getLogger(LinkKeeperBot::class.java)
+    private val logger = LoggerFactory.getLogger(SQCrowdsourcerBot::class.java)
 
     private val bot = bot {
         token = tgToken
@@ -72,7 +74,11 @@ internal class LinkKeeperBot(
     }
 
     private fun sendResults(chatId: Long) {
-        // TODO
+        val name = "dataset" + Random.nextLong() + ".csv"
+        val file = File(name)
+        exportStats(file, db.getRates())
+        bot.sendDocument(chatId, file)
+        file.delete()
     }
 
     private fun sendRateRequest(chatId: Long, override: Boolean = false) {

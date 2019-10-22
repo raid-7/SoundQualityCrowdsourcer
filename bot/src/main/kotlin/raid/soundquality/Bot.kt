@@ -20,6 +20,6 @@ fun main(args: Array<String>) {
 
     val db = Db(getenv("DB_URL"), getenv("DB_USER"), getenv("DB_PASSWORD"))
     val sounds = SoundSet(File(args[0]))
-    val bot = LinkKeeperBot(getenv("TELEGRAM_TOKEN"), db, sounds, getEnvProxy())
+    val bot = SQCrowdsourcerBot(getenv("TELEGRAM_TOKEN"), db, sounds, getEnvProxy())
     bot.startPolling()
 }
