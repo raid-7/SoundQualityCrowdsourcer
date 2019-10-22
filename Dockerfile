@@ -12,6 +12,6 @@ RUN apt-get update && apt-get install -y curl nano htop
 
 WORKDIR /app
 COPY --from=builder /app/bot/bot.jar ./
-COPY --from=builder /app/dataset ./
+COPY --from=builder /app/dataset ./dataset
 
 ENTRYPOINT java -jar /app/bot.jar /app/dataset
