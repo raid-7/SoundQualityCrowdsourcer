@@ -89,11 +89,11 @@ internal class SQCrowdsourcerBot(
 
         bot.sendAudio(chatId, source, title = "Source speach")
         bot.sendAudio(chatId, derivative, title = "Phone sound")
-        bot.sendMessage(chatId, "Please rate this call 0 from (completely unrecognizable) to 6 (prefect quality)")
+        bot.sendMessage(chatId, "Please rate this call from 0 (completely unrecognizable) to 6 (prefect quality)")
     }
 
     private fun sendWrongRate(chatId: Long) {
-        bot.sendMessage(chatId, "Wrong rate. Please rate this call 0 from (completely unrecognizable) to 6 (prefect quality)")
+        bot.sendMessage(chatId, "Wrong rate. Please rate this call from 0 (completely unrecognizable) to 6 (prefect quality)")
     }
 
     fun processPossibleRate(chatId: Long, text: String?) {
