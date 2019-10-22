@@ -29,6 +29,9 @@ internal class LinkKeeperBot(
         dispatch {
             text { _, update ->
                 update.message?.apply {
+                    if (text?.startsWith("/") == true)
+                        return@apply
+
                     processPossibleRate(chat.id, text)
                 }
             }
@@ -54,7 +57,7 @@ internal class LinkKeeperBot(
 
             command("stats") { _, update ->
                 update.message?.apply {
-                    // TODO
+                    sendResults(chat.id)
                 }
             }
 
@@ -66,6 +69,10 @@ internal class LinkKeeperBot(
 
     fun startPolling() {
         bot.startPolling()
+    }
+
+    private fun sendResults(chatId: Long) {
+        // TODO
     }
 
     private fun sendRateRequest(chatId: Long, override: Boolean = false) {
@@ -96,7 +103,7 @@ internal class LinkKeeperBot(
         }
 
         if (value == null) {
-            sendRateRequest(chatId)
+            sendWrongRate(chatId)
             return
         }
 
