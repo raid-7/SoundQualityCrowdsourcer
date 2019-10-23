@@ -21,6 +21,10 @@ internal class SQCrowdsourcerBot(
     private val sounds: SoundSet,
     proxy: Proxy = Proxy.NO_PROXY
 ) {
+    private companion object {
+        val MAX_PROPOSAL_ATTEMPTS = 30
+    }
+
     private val random = Random()
     private val logger = LoggerFactory.getLogger(SQCrowdsourcerBot::class.java)
 
@@ -83,13 +87,29 @@ internal class SQCrowdsourcerBot(
     }
 
     private fun sendRateRequest(chatId: Long, override: Boolean = false) {
-        val proposed = sounds.proposeSample()
-        val real = db.setState(chatId, proposed.first, proposed.second, override)
+        var real: Pair<String, String>? = null
+        for (i in 1..MAX_PROPOSAL_ATTEMPTS) {
+            val proposed = sounds.proposeSample()
+            real = db.setState(chatId, proposed.first, proposed.second, override)
+            if (real != null) {
+                break
+            }
+        }
+
+        if (real == null) {
+            sendNoMoreSamples(chatId)
+            return
+        }
+
         val (source, derivative) = sounds.getFiles(real.first, real.second)
 
         bot.sendAudio(chatId, source, title = "Source speach")
         bot.sendAudio(chatId, derivative, title = "Phone sound")
         bot.sendMessage(chatId, "Please rate this call from 0 (completely unrecognizable) to 6 (prefect quality)")
+    }
+
+    private fun sendNoMoreSamples(chatId: Long) {
+        bot.sendMessage(chatId,"There are no more samples for you. We appreciate your help!")
     }
 
     private fun sendWrongRate(chatId: Long) {
@@ -106,7 +126,7 @@ internal class SQCrowdsourcerBot(
                 } catch (exc: NumberFormatException) {
                     return@let null
                 }
-                if (v >= 0 && v <= 6)
+                if (v in 0..6)
                     v
                 else
                     null

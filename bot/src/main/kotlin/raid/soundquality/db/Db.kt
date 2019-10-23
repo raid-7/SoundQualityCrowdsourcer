@@ -1,6 +1,5 @@
 package raid.soundquality.db
 
-import me.ivmg.telegram.entities.Chat
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.DEFAULT_REPETITION_ATTEMPTS
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -109,7 +108,12 @@ class Db(url: String? = null, user: String? = null, password: String? = null) {
             ChatStates.select {
                 ChatStates.chatId.eq(chatIdVal)
             }.map {
-                Pair(it[ChatStates.sampleName]!!, it[ChatStates.derivativeName]!!)
+                val sample = it[ChatStates.sampleName]
+                val derivative = it[ChatStates.derivativeName]
+                if (sample == null || derivative == null)
+                    null
+                else
+                    Pair(sample, derivative)
             }[0]
         }
 

@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.github.seik.kotlin-telegram-bot</groupId>
             <artifactId>dispatcher</artifactId>
-            <version>0.3.8</version>
+            <version>4.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>
