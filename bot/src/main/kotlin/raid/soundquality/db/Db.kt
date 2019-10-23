@@ -42,30 +42,32 @@ class Db(url: String? = null, user: String? = null, password: String? = null) {
         }
     }
 
-    fun addRate(chatIdVal: Long, rateVal: Int): Boolean = transaction {
-        val (sampleNameVal, derivativeNameVal) = ChatStates.select {
-            ChatStates.chatId.eq(chatIdVal)
-        }.map {
-            Pair(it[ChatStates.sampleName], it[ChatStates.derivativeName])
-        }.getOrNull(0) ?: return@transaction false
+    fun addRate(chatIdVal: Long, rateVal: Int): Boolean =
+        transaction {
+            val (sampleNameVal, derivativeNameVal) = ChatStates.select {
+                ChatStates.chatId.eq(chatIdVal)
+            }.map {
+                Pair(it[ChatStates.sampleName], it[ChatStates.derivativeName])
+            }.getOrNull(0) ?: return@transaction false
 
-        if (sampleNameVal == null || derivativeNameVal == null)
-            return@transaction false
+            if (sampleNameVal == null || derivativeNameVal == null)
+                return@transaction false
 
-        Rates.insert {
-            it[chatId] = chatIdVal
-            it[sampleName] = sampleNameVal
-            it[derivativeName] = derivativeNameVal
-            it[rate] = rateVal
+            Rates.insert {
+                it[chatId] = chatIdVal
+                it[sampleName] = sampleNameVal
+                it[derivativeName] = derivativeNameVal
+                it[rate] = rateVal
+            }
+            ChatStates.update({
+                ChatStates.chatId.eq(chatIdVal)
+            }) {
+                it[sampleName] = null
+                it[derivativeName] = null
+            }
+
+            true
         }
-        ChatStates.update {
-            it[chatId] = chatIdVal
-            it[sampleName] = null
-            it[derivativeName] = null
-        }
-
-        true
-    }
 
     fun setState(chatIdVal: Long, sampleNameVal: String, derivativeNameVal: String, override: Boolean = true) =
         transaction {
@@ -95,9 +97,9 @@ class Db(url: String? = null, user: String? = null, password: String? = null) {
                     }
 
                     ChatStates.update({
-                        (ChatStates.sampleName.isNull() and ChatStates.derivativeName.isNull()) or overrideExpr
+                        ChatStates.chatId.eq(chatIdVal) and
+                                ((ChatStates.sampleName.isNull() and ChatStates.derivativeName.isNull()) or overrideExpr)
                     }) {
-                        it[chatId] = chatIdVal
                         it[sampleName] = sampleNameVal
                         it[derivativeName] = derivativeNameVal
                     }
@@ -128,7 +130,8 @@ class Db(url: String? = null, user: String? = null, password: String? = null) {
         }
 
 
-    private fun <T> transaction(statement: Transaction.() -> T): T = transaction(
-        Connection.TRANSACTION_SERIALIZABLE, DEFAULT_REPETITION_ATTEMPTS, conn, statement
-    )
+    private fun <T> transaction(statement: Transaction.() -> T): T =
+        transaction(
+            Connection.TRANSACTION_SERIALIZABLE, DEFAULT_REPETITION_ATTEMPTS, conn, statement
+        )
 }

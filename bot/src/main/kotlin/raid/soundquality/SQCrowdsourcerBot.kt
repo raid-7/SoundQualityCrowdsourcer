@@ -35,32 +35,32 @@ internal class SQCrowdsourcerBot(
                     if (text?.startsWith("/") == true)
                         return@apply
 
-                    processPossibleRate(chat.id, text)
+                    safe { processPossibleRate(chat.id, text) }
                 }
             }
 
             command("another") { _, update ->
                 update.message?.apply {
-                    sendRateRequest(chat.id, true)
+                    safe { sendRateRequest(chat.id, true) }
                 }
             }
 
             command("help") { _, update ->
                 update.message?.apply {
-                    sendHelp(chat.id)
-                    sendRateRequest(chat.id)
+                    safe { sendHelp(chat.id) }
+                    safe { sendRateRequest(chat.id) }
                 }
             }
             command("start") { _, update ->
                 update.message?.apply {
-                    sendStart(chat.id)
-                    sendRateRequest(chat.id)
+                    safe { sendStart(chat.id) }
+                    safe { sendRateRequest(chat.id) }
                 }
             }
 
             command("stats") { _, update ->
                 update.message?.apply {
-                    sendResults(chat.id)
+                    safe { sendResults(chat.id) }
                 }
             }
 
@@ -152,5 +152,13 @@ internal class SQCrowdsourcerBot(
             Thank you!
             """.trimIndent(), parseMode = ParseMode.MARKDOWN
         )
+    }
+
+    private inline fun <T> T.safe(func: T.() -> Unit) {
+        try {
+            func()
+        } catch (exc: Exception) {
+            exc.printStackTrace()
+        }
     }
 }
