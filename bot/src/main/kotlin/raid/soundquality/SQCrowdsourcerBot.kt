@@ -105,7 +105,7 @@ internal class SQCrowdsourcerBot(
 
         bot.sendAudio(chatId, source, title = "Source speach")
         bot.sendAudio(chatId, derivative, title = "Phone sound")
-        bot.sendMessage(chatId, "Please rate this call from 0 (completely unrecognizable) to 6 (prefect quality)")
+        bot.sendMessage(chatId, "Please rate this call from 0 (completely unrecognizable) to 6 (perfect quality)")
     }
 
     private fun sendNoMoreSamples(chatId: Long) {
@@ -113,7 +113,7 @@ internal class SQCrowdsourcerBot(
     }
 
     private fun sendWrongRate(chatId: Long) {
-        bot.sendMessage(chatId, "Wrong rate. Please rate this call from 0 (completely unrecognizable) to 6 (prefect quality)")
+        bot.sendMessage(chatId, "Wrong rate. Please rate this call from 0 (completely unrecognizable) to 6 (perfect quality)")
     }
 
     fun processPossibleRate(chatId: Long, text: String?) {
@@ -152,7 +152,7 @@ internal class SQCrowdsourcerBot(
             
             The bot will send you sets of two sounds. The first one is a source speech and the second one is what the other side hears.
             
-            Please listen to both audios carefully and rate the call quality from 0 (speech is completely unrecognizable) to 6 (prefect quality).
+            Please listen to both audios carefully and rate the call quality from 0 (speech is completely unrecognizable) to 6 (perfect quality).
             
             Thank you!
             """.trimIndent(), parseMode = ParseMode.MARKDOWN
@@ -167,7 +167,7 @@ internal class SQCrowdsourcerBot(
             
             The bot will send you sets of two sounds. The first one is a source speech and the second one is what the other side hears.
             
-            Please, listen to both audios carefully and rate the call quality from 0 (speech is completely unrecognizable) to 6 (prefect quality).
+            Please, listen to both audios carefully and rate the call quality from 0 (speech is completely unrecognizable) to 6 (perfect quality).
             
             Thank you!
             """.trimIndent(), parseMode = ParseMode.MARKDOWN
